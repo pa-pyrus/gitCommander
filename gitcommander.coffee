@@ -12,6 +12,7 @@ console.log "* Reading config file #{CONFIG_FILE}."
 nconf.file CONFIG_FILE
 
 IRC_OPTS = nconf.get "irc"
+CHANNELS = IRC_OPTS.options.channels
 GIT_OPTS = nconf.get "git"
 RECENCY = nconf.get "recency"
 TIMEOUT = nconf.get "timeout"
@@ -37,31 +38,31 @@ ircClient.addListener "motd", (motd) ->
   timer = setInterval timerCallback, TIMEOUT
   timer.unref
 
-events = []
 eventTeller =
   "PushEvent": (channel, event) ->
     ircClient.say channel, "[#{event.created_at}] #{event.actor.login} pushed
       #{event.payload.size} commit(s) to #{event.repo.name}"
 
+events = []
 handleEvents = (err, res) ->
   if err? or not res?
     console.log "! Error when handling events: #{err}."
     return
 
   nofEvents = 0
-  res.reverse
-  now = Date.now()
+  do res.reverse
+  now = do Date.now
 
   for event in res
     # ignore events we've already seen and those older than one hour
     eventDate = new Date event.created_at
-    age = now - eventDate.getTime()
+    age = now - do eventDate.getTime
     if age >= RECENCY or event.id in events
       continue
     events.push event.id
     nofEvents++
     if event.type of eventTeller
-      for channel in IRC_OPTS.options.channels
+      for channel in CHANNELS
         eventTeller[event.type] channel, event
 
   console.log "* Seen #{nofEvents} new events (#{events.length} total)."
