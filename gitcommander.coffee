@@ -2,7 +2,7 @@
 path = require "path"
 nconf = require "nconf"
 
-if process.env.XDG_CONFIG_HOME?
+if "XDG_CONFIG_HOME" of process.env
   CONFIG_HOME = process.env.XDG_CONFIG_HOME
 else
   CONFIG_HOME = path.join process.env.HOME, ".config"
@@ -16,6 +16,24 @@ CHANNELS = IRC_OPTS.options.channels
 GIT_OPTS = nconf.get "git"
 RECENCY = nconf.get "recency"
 TIMEOUT = nconf.get "timeout"
+
+# write pidfile
+PIDFILE = nconf.get "pidfile"
+console.log "* Writing PID file #{PIDFILE}."
+fs = require "fs"
+fs.writeFileSync PIDFILE, process.pid
+
+# delete pidfile on exit
+process.on "exit", (code) ->
+  console.log "* Deleting PID file #{PIDFILE}."
+  fs.unlinkSync PIDFILE
+
+# call exit on SIGINT and SIGTERM
+exitHandler = (signal) ->
+  console.log "* Received #{signal}. Exiting..."
+  process.exit(0)
+process.on "SIGINT", -> exitHandler("SIGINT")
+process.on "SIGTERM", -> exitHandler("SIGTERM")
 
 # setup github api
 GitHubApi = require "github"
