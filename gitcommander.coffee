@@ -72,7 +72,7 @@ handleEvents = (err, res) ->
   now = do Date.now
 
   for event in res
-    # ignore events we've already seen and those older than one hour
+    # ignore events we've already seen and those older than the configured limit
     eventDate = new Date event.created_at
     age = now - do eventDate.getTime
     if age >= RECENCY or event.id in events
