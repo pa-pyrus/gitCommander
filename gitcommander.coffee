@@ -88,6 +88,17 @@ handleEvents = (err, res) ->
 
 timerCallback = ->
   for orgEntry in GIT_OPTS.orgs
-    github.events.getFromOrg org: orgEntry, handleEvents
+    github.events.getFromOrg
+      org: orgEntry
+      handleEvents
+
+  for repoEntry in GIT_OPTS.repos
+    github.events.getFromRepo
+      user: repoEntry.user
+      repo: repoEntry.repo
+      handleEvents
+
   for userEntry in GIT_OPTS.users
-    github.events.getFromUser user: userEntry, handleEvents
+    github.events.getFromUser
+      user: userEntry
+      handleEvents
