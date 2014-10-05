@@ -83,7 +83,8 @@ handleEvents = (err, res) ->
       for channel in CHANNELS
         eventTeller[event.type] channel, event
 
-  console.log "* Seen #{nofEvents} new events (#{events.length} total)."
+  if nofEvents
+    console.log "* Seen #{nofEvents} new events (#{events.length} total)."
 
 timerCallback = ->
   for orgEntry in GIT_OPTS.orgs
