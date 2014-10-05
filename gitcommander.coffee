@@ -60,6 +60,9 @@ eventTeller =
   "PushEvent": (channel, event) ->
     ircClient.say channel, "[#{event.created_at}] #{event.actor.login} pushed
       #{event.payload.size} commit(s) to #{event.repo.name}"
+  "ReleaseEvent": (channel, event) ->
+    ircClient.say channel, "[#{event.created_at}] #{event.actor.login} published
+      a new release (#{event.payload.release.tag_name}) of #{event.repo.name}"
 
 events = []
 handleEvents = (err, res) ->
