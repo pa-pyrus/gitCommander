@@ -54,7 +54,7 @@ ircClient.addListener "motd", (motd) ->
   console.log "* Connected to IRC."
   console.log "* Starting timer with timout #{TIMEOUT}."
   timer = setInterval timerCallback, TIMEOUT
-  timer.unref
+  do timer.unref
 
 eventTeller =
   "PushEvent": (channel, event) ->
