@@ -60,8 +60,9 @@ ircClient.addListener "motd", (motd) ->
 
 eventTeller =
   "PushEvent": (channel, event) ->
+    numerus = if event.payload.size > 1 then "commits" else "commit"
     ircClient.say channel, "[#{event.created_at}] #{event.actor.login} pushed
-      #{event.payload.size} commit(s) to
+      #{event.payload.size} #{numerus} to
       #{event.repo.name} (#{event.repo.weburl})"
   "ReleaseEvent": (channel, event) ->
     ircClient.say channel, "[#{event.created_at}] #{event.actor.login} published
