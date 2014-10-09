@@ -12,7 +12,8 @@
     "coffee-script": "~1.7.1",
     "irc": "~0.3.7",
     "nconf": "~0.6.9",
-    "github": "~0.2.2"
+    "github": "~0.2.2",
+    "gitio2": "~2.0.0"
   },
   "files": [ "gitcommander.coffee" ],
   "scripts": { "start": "coffee gitcommander.coffee" }

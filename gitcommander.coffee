@@ -44,6 +44,8 @@ github.authenticate
   type: "oauth"
   token: GIT_OPTS.token
 
+gitio = require "gitio2"
+
 # connect to IRC
 irc = require "irc"
 console.log "* Connecting to IRC (#{IRC_OPTS.server})."
@@ -59,10 +61,12 @@ ircClient.addListener "motd", (motd) ->
 eventTeller =
   "PushEvent": (channel, event) ->
     ircClient.say channel, "[#{event.created_at}] #{event.actor.login} pushed
-      #{event.payload.size} commit(s) to #{event.repo.name}"
+      #{event.payload.size} commit(s) to
+      #{event.repo.name} (#{event.repo.weburl})"
   "ReleaseEvent": (channel, event) ->
     ircClient.say channel, "[#{event.created_at}] #{event.actor.login} published
-      a new release (#{event.payload.release.tag_name}) of #{event.repo.name}"
+      a new release (#{event.payload.release.tag_name}) of
+      #{event.repo.name} (#{event.repo.weburl})"
 
 events = []
 handleEvents = (err, res) ->
@@ -83,8 +87,16 @@ handleEvents = (err, res) ->
     events.push event.id
     nofEvents++
     if event.type of eventTeller
-      for channel in CHANNELS
-        eventTeller[event.type] channel, event
+      weburl = "https://github.com/#{event.repo.name}"
+      gitio weburl, (gitioerr, gitiores) ->
+        if gitioerr? or not gitiores?
+          console.log "! Error when shortening URL #{weburl}."
+          event.repo.weburl = weburl
+        else
+          event.repo.weburl = gitiores
+
+        for channel in CHANNELS
+          eventTeller[event.type] channel, event
 
   if nofEvents
     console.log "* Seen #{nofEvents} new events (#{events.length} total)."
