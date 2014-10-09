@@ -58,17 +58,6 @@ ircClient.addListener "motd", (motd) ->
   timer = setInterval timerCallback, TIMEOUT
   do timer.unref
 
-eventTeller =
-  "PushEvent": (channel, event) ->
-    numerus = if event.payload.size > 1 then "commits" else "commit"
-    ircClient.say channel, "[#{event.created_at}] #{event.actor.login} pushed
-      #{event.payload.size} #{numerus} to
-      #{event.repo.name} (#{event.repo.weburl})"
-  "ReleaseEvent": (channel, event) ->
-    ircClient.say channel, "[#{event.created_at}] #{event.actor.login} published
-      a new release (#{event.payload.release.tag_name}) of
-      #{event.repo.name} (#{event.repo.weburl})"
-
 events = []
 handleEvents = (err, res) ->
   if err? or not res?
@@ -86,21 +75,35 @@ handleEvents = (err, res) ->
     if age >= RECENCY or event.id in events
       continue
     events.push event.id
-    nofEvents++
     if event.type of eventTeller
-      weburl = "https://github.com/#{event.repo.name}"
-      gitio weburl, (gitioerr, gitiores) ->
-        if gitioerr? or not gitiores?
-          console.log "! Error when shortening URL #{weburl}."
-          event.repo.weburl = weburl
-        else
-          event.repo.weburl = gitiores
-
-        for channel in CHANNELS
-          eventTeller[event.type] channel, event
+      nofEvents++
+      announceEvent event
 
   if nofEvents
     console.log "* Seen #{nofEvents} new events (#{events.length} total)."
+
+announceEvent = (event) ->
+  weburl = "https://github.com/#{event.repo.name}"
+  gitio weburl, (err, res) ->
+    if err? or not res?
+      console.log "! Error when shortening URL #{weburl}."
+      event.repo.weburl = weburl
+    else
+      event.repo.weburl = res
+
+    for channel in CHANNELS
+      eventTeller[event.type] channel, event
+
+eventTeller =
+  "PushEvent": (channel, event) ->
+    numerus = if event.payload.size > 1 then "commits" else "commit"
+    ircClient.say channel, "[#{event.created_at}] #{event.actor.login} pushed
+      #{event.payload.size} #{numerus} to
+      #{event.repo.name} (#{event.repo.weburl})"
+  "ReleaseEvent": (channel, event) ->
+    ircClient.say channel, "[#{event.created_at}] #{event.actor.login} published
+      a new release (#{event.payload.release.tag_name}) of
+      #{event.repo.name} (#{event.repo.weburl})"
 
 timerCallback = ->
   for orgEntry in GIT_OPTS.orgs
