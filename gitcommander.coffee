@@ -83,17 +83,29 @@ handleEvents = (err, res) ->
   if nofEvents
     console.log "* Seen #{nofEvents} new events (#{events.length} total)."
 
+repoUrls = {}
 announceEvent = (event) ->
   weburl = "https://github.com/#{event.repo.name}"
-  gitio weburl, (err, res) ->
-    if err? or not res?
-      console.log "! Error when shortening URL #{weburl}."
-      event.repo.weburl = weburl
-    else
-      event.repo.weburl = res
 
+  # do we already have a shortened url for this one?
+  if event.repo.name of repoUrls
+    event.repo.weburl = repoUrls[event.repo.name]
+
+    # tell immediately
     for channel in CHANNELS
       eventTeller[event.type] channel, event
+  else
+    gitio weburl, (err, res) ->
+      if err? or not res?
+        console.log "! Error when shortening URL #{weburl}."
+        event.repo.weburl = weburl
+      else
+        # remember the url in case we need it again
+        repoUrls[event.repo.name] = res
+        event.repo.weburl = res
+
+      for channel in CHANNELS
+        eventTeller[event.type] channel, event
 
 eventTeller =
   "PushEvent": (channel, event) ->
