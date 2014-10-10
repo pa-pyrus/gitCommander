@@ -65,7 +65,6 @@ handleEvents = (err, res) ->
     return
 
   nofEvents = 0
-  do res.reverse
   now = do Date.now
 
   for event in res
