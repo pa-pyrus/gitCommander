@@ -15,3 +15,4 @@ It crawls the GitHub API for events and announces them on configured channels.
 * [node-irc](https://github.com/martynsmith/node-irc)
 * [nconf](https://github.com/flatiron/nconf)
 * [node-github](https://github.com/mikedeboer/node-github)
+* [node-gitio2](https://github.com/passcod/node-gitio)
