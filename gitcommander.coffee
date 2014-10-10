@@ -57,6 +57,8 @@ ircClient.addListener "motd", (motd) ->
   console.log "* Starting timer with timout #{TIMEOUT}."
   timer = setInterval timerCallback, TIMEOUT
   do timer.unref
+  # trigger first update immediately
+  do timerCallback
 
 events = []
 handleEvents = (err, res) ->
