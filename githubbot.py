@@ -77,7 +77,7 @@ class GithubBot(irc.IRCClient):
 
     def tellPushEvent(self, event, channel):
         """Write a PushEvent to the specified channel."""
-        numerus = "commits" if event["payload"]["size"] else "commit"
+        numerus = "commits" if event["payload"]["size"] > 1 else "commit"
         self.say(channel,
                  "[{0}] \x02{1}\x02 pushed {2} {3} "
                  "to \x02{4}\x02 ({5})".format(
