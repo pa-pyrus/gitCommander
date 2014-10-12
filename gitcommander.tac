@@ -6,6 +6,9 @@ gitcommander.tac
 
 The GitCommander IRC bot Twisted service file.
 Reads the configuration, sets up logging and starts the bot.
+
+Copyright (c) 2014 Pyrus <pyrus@coffee-break.at>
+See the file LICENSE for copying permission.
 """
 
 from twisted.application import internet, service

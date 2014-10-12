@@ -7,6 +7,9 @@ configuration.py
 The GitCommander IRC bot configuration loader.
 It reads the configuration from XDG_CONFIG_HOME/GitCommander/config.json and
 provides access to it.
+
+Copyright (c) 2014 Pyrus <pyrus@coffee-break.at>
+See the file LICENSE for copying permission.
 """
 
 from json import load

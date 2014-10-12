@@ -5,6 +5,9 @@
 githubbot.py
 
 Defines the GitCommander IRC bot and its protocol factory.
+
+Copyright (c) 2014 Pyrus <pyrus@coffee-break.at>
+See the file LICENSE for copying permission.
 """
 
 from twisted.internet import protocol, reactor

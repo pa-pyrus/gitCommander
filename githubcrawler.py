@@ -5,6 +5,9 @@
 githubcrawler.py
 
 Defines the GithubCrawler class.
+
+Copyright (c) 2014 Pyrus <pyrus@coffee-break.at>
+See the file LICENSE for copying permission.
 """
 
 from datetime import datetime
