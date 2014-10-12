@@ -78,16 +78,16 @@ class GithubBot(irc.IRCClient):
     def tellPushEvent(self, event, channel):
         """Write a PushEvent to the specified channel."""
         numerus = "commits" if event["payload"]["size"] else "commit"
-        self.msg(channel,
-                 "[{0}] \0x2{1}\x02 pushed {3} {4} "
-                 "to \x02{5}\x02 ({6})".format(
+        self.say(channel,
+                 "[{0}] \x02{1}\x02 pushed {2} {3} "
+                 "to \x02{4}\x02 ({5})".format(
                      event["created_at"], event["actor"]["login"],
                      event["payload"]["size"], numerus,
                      event["repo"]["name"], event["repo"]["weburl"]))
 
     def tellReleaseEvent(self, event, channel):
         """Write a ReleaseEvent to the specified channel."""
-        self.msg(channel,
+        self.say(channel,
                  "[{0}] \x02{1}\x02 published a new release {2} "
                  "to \x02{3}\x02 ({4})".format(
                      event["created_at"], event["actor"]["login"],
