@@ -145,7 +145,7 @@ class GithubCrawler(object):
         """
         repo_name = event["repo"]["name"]
         if repo_name in self.gitio_cache:
-            event["repo"]["weburl"] = self.gitio_cache["repo_name"]
+            event["repo"]["weburl"] = self.gitio_cache[repo_name]
             return succeed(event)
 
         full_url = "{0}/{1}".format(GH_WEB_URL, repo_name)
